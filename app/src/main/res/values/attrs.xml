@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WheelView">
+        <attr name="firstColor" format="color" />
+        <attr name="secondColor" format="color" />
+        <attr name="thirdColor" format="color" />
+        <attr name="forthColor" format="color" />
+        <attr name="fifthColor" format="color" />
+        <attr name="defaultText" format="string"></attr>
+    </declare-styleable>
+</resources>
