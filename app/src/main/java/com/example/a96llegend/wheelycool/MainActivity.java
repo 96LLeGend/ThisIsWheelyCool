@@ -40,26 +40,16 @@ public class MainActivity extends AppCompatActivity {
         String[] options = {"", "", "", "", ""};
 
         //Save all the user's input and add to array for passing
-        if(!option1.getText().toString().equals("")){
-            putOption(1, option1.getText().toString());
-            options[0] = option1.getText().toString();
-        }
-        if(!option2.getText().toString().equals("")){
-            putOption(2, option2.getText().toString());
-            options[1] = option2.getText().toString();
-        }
-        if(!option3.getText().toString().equals("")){
-            putOption(3, option3.getText().toString());
-            options[2] = option3.getText().toString();
-        }
-        if(!option4.getText().toString().equals("")){
-            putOption(4, option4.getText().toString());
-            options[3] = option4.getText().toString();
-        }
-        if(!option5.getText().toString().equals("")){
-            putOption(5, option5.getText().toString());
-            options[4] = option5.getText().toString();
-        }
+        putOption(1, option1.getText().toString());
+        options[0] = option1.getText().toString();
+        putOption(2, option2.getText().toString());
+        options[1] = option2.getText().toString();
+        putOption(3, option3.getText().toString());
+        options[2] = option3.getText().toString();
+        putOption(4, option4.getText().toString());
+        options[3] = option4.getText().toString();
+        putOption(5, option5.getText().toString());
+        options[4] = option5.getText().toString();
 
         //To the wheel
         Intent intent = new Intent(this, WheelActivity.class);

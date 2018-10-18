@@ -8,24 +8,27 @@
     tools:context=".WheelActivity">
 
     <com.example.a96llegend.wheelycool.WheelView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:id="@+id/wheel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="64dp"
         android:visibility="visible"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        custom:layout_constraintBottom_toTopOf="@+id/button" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
+        android:onClick="spin"
         android:text="@string/spin"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"

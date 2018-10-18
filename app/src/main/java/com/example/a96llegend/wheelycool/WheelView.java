@@ -5,12 +5,18 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WheelView extends View {
+
+    private static final String tag = "====Debug====";
 
     //circle and text colors
     private int[] colour = {Color.parseColor("#BE4A47"), Color.parseColor("#6495ED"),
@@ -18,6 +24,7 @@ public class WheelView extends View {
 
     //label text
     private String defaultText = "no option";
+    private List<String> options = new ArrayList<String>();
 
     public WheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -26,10 +33,27 @@ public class WheelView extends View {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.WheelView, 0, 0);
         try {
-            String temp = a.getString(R.styleable.WheelView_defaultText);
+            String temp = a.getString(R.styleable.WheelView_firstOption);
             if(temp != null){
-                defaultText = temp;
+                options.add(temp);
             }
+            temp = a.getString(R.styleable.WheelView_secondOption);
+            if(temp != null){
+                options.add(temp);
+            }
+            temp = a.getString(R.styleable.WheelView_thirdOption);
+            if(temp != null){
+                options.add(temp);
+            }
+            temp = a.getString(R.styleable.WheelView_forthOption);
+            if(temp != null){
+                options.add(temp);
+            }
+            temp = a.getString(R.styleable.WheelView_fifthOption);
+            if(temp != null){
+                options.add(temp);
+            }
+
             colour[0] = a.getInteger(R.styleable.WheelView_firstColor, colour[0]);
             colour[1] = a.getInteger(R.styleable.WheelView_secondColor, colour[1]);
             colour[2] = a.getInteger(R.styleable.WheelView_thirdColor, colour[2]);
@@ -40,20 +64,44 @@ public class WheelView extends View {
         }
     }
 
+    //For setting options in run time
+    public void setOptions(List<String> optionList){
+        options.clear();
+        for(int i = 0; i < optionList.size(); i++){
+            options.add(optionList.get(i));
+        }
+        invalidate();
+    }
+
+    //Force the wheel view to be a square
+    @Override
+    protected void onMeasure(int widthMeasure, int heightMeasure){
+        super.onMeasure(widthMeasure, heightMeasure);
+        int width = this.getMeasuredWidth();
+        int height = this.getMeasuredHeight();
+
+        if(width < height) {
+            setMeasuredDimension(width, width);
+        }else {
+            setMeasuredDimension(height, height);
+        }
+    }
+
+    //Draw the wheel
     @Override
     protected void onDraw(Canvas canvas) {
         //get half of the width and height as we are working with a circle
         int viewWidthHalf = this.getMeasuredWidth()/2;
         int viewHeightHalf = this.getMeasuredHeight()/2;
 
-        //  Calculate radius
+        // Calculate radius and text size
         // get the radius as half of the width or height, whichever is smaller
         //subtract ten so that it has some space around it
         int radius = 0;
         if(viewWidthHalf>viewHeightHalf) {
-            radius = viewHeightHalf - 10;
+            radius = viewHeightHalf;
         }else {
-            radius = viewWidthHalf - 10;
+            radius = viewWidthHalf;
         }
 
         //paint for drawing custom view
@@ -61,34 +109,53 @@ public class WheelView extends View {
         circlePaint.setStyle(Style.FILL);
         circlePaint.setAntiAlias(true);
 
-        //set the text color using the color specified
-        circlePaint.setColor(Color.BLACK);
-        circlePaint.setTextAlign(Paint.Align.CENTER);
-        circlePaint.setTextSize(50);
-        canvas.drawText(defaultText, viewWidthHalf, viewHeightHalf, circlePaint);
+        //Calculate text size
+        float textSize = radius / 7;
 
         //Set the bounds of oval to the whole canvas
-        RectF bounds = new RectF(0, 0, viewWidthHalf * 2, viewHeightHalf * 2);
+        RectF bounds = new RectF(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
 
-        //First section
-        circlePaint.setColor(colour[0]);
-        canvas.drawArc(bounds, 0f, 72f, true, circlePaint);
-
-        //Second section
-        circlePaint.setColor(colour[1]);
-        canvas.drawArc(bounds, 72f, 72f, true, circlePaint);
-
-        //Third section
-        circlePaint.setColor(colour[2]);
-        canvas.drawArc(bounds, 144f, 72f, true, circlePaint);
-
-        //Forth section
-        circlePaint.setColor(colour[3]);
-        canvas.drawArc(bounds, 216f, 72f, true, circlePaint);
-
-        //Fifth section
-        circlePaint.setColor(colour[4]);
-        canvas.drawArc(bounds, 288f, 72f, true, circlePaint);
+        int segments = options.size();
+        if(segments > 1){
+            float gap = 360 / segments;
+            for(int i = 0; i < segments; i++){
+                drawSegment(circlePaint, canvas, bounds, gap*i, gap, i);
+                drawText(circlePaint, canvas, textSize, ((gap/2f) + (gap*(float)i)), viewWidthHalf, viewHeightHalf, options.get(i), radius);
+            }
+        } else {
+            circlePaint.setColor(colour[0]);
+            canvas.drawCircle(viewHeightHalf, viewHeightHalf, radius, circlePaint);
+            circlePaint.setColor(Color.BLACK);
+            circlePaint.setTextAlign(Paint.Align.CENTER);
+            circlePaint.setTextSize(textSize);
+            if(segments == 1) {
+                canvas.drawText(options.get(0), viewWidthHalf, viewHeightHalf - ((circlePaint.descent() + circlePaint.ascent()) / 2), circlePaint);
+            } else {
+                canvas.drawText("No option", viewWidthHalf, viewHeightHalf - ((circlePaint.descent() + circlePaint.ascent()) / 2), circlePaint);
+            }
+        }
     }
 
+    private void drawSegment(Paint paint, Canvas canvas, RectF bound, float start, float sweep, int colourIndex){
+        //Draw arc
+        paint.setColor(colour[colourIndex]);
+        canvas.drawArc(bound, start, sweep, true, paint);
+    }
+
+    private void drawText(Paint paint, Canvas canvas, float textSize, float angle, float viewWidthHalf, float viewHeightHalf, String text, int radius){
+        //set the text color using the color specified
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(textSize);
+
+        //Calculate location
+        float x = viewWidthHalf + (0.5f * (float)radius);
+        float y = viewWidthHalf - ((paint.descent() + paint.ascent()) / 2);
+
+        //Rotate canvas and draw text
+        canvas.save();
+        canvas.rotate(angle, viewWidthHalf, viewHeightHalf);
+        canvas.drawText(text, x, y, paint); //Use unrotate x, and y, beacuse coordinate rotate as well.
+        canvas.restore();
+    }
 }

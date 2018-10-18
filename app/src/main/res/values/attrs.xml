@@ -6,6 +6,10 @@
         <attr name="thirdColor" format="color" />
         <attr name="forthColor" format="color" />
         <attr name="fifthColor" format="color" />
-        <attr name="defaultText" format="string"></attr>
+        <attr name="firstOption" format="string"/>
+        <attr name="secondOption" format="string"/>
+        <attr name="thirdOption" format="string"/>
+        <attr name="forthOption" format="string"/>
+        <attr name="fifthOption" format="string"/>
     </declare-styleable>
 </resources>
