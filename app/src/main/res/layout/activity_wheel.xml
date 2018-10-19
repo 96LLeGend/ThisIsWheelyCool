@@ -34,4 +34,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/pointerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="64dp"
+        android:contentDescription="Arrow"
+        android:rotation="180"
+        custom:layout_constraintBottom_toTopOf="@+id/button"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintTop_toTopOf="parent"
+        custom:srcCompat="@drawable/pointer" />
 </android.support.constraint.ConstraintLayout>
